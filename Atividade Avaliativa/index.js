@@ -1,8 +1,10 @@
 const express = require("express");
 const { alunosChamada, adicionarAluno, deletarAluno, atualizarAluno } = require("./alunos");
 const fs = require("fs");
+const morgan = require("morgan");
 const app = express();
 app.use(express.json());
+app.use(morgan("dev"));
 
 const dbFilePath = "./db.json";
 let alunos = [];
@@ -35,7 +37,7 @@ app.get("/alunos", (req, res) => {
     res.json(alunos);
 });
 
-app.put("/alunos/novo", (req, res) =>{
+app.post("/alunos/novo", (req, res) =>{
     const {nome, matricula, media} = req.body;
     if((nome !== undefined )||(matricula !== undefined)||(media !== undefined)){
       adicionarAluno({ nome, matricula, media });
@@ -68,7 +70,7 @@ app.delete("/alunos/deletar/:index", (req, res) =>{
     }
 });
 
-app.post("/alunos/atualizar/:index", (req, res) =>{
+app.put("/alunos/atualizar/:index", (req, res) =>{
     const {index} = req.params;
     const {nome, matricula, media} = req.body;
     if(index >= 0 && index < alunos.length ){
